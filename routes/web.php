@@ -19,6 +19,18 @@ Route::get('/', function () {
 // Authentication routes
 require __DIR__.'/auth.php';
 
+Route::get('/fix-cache', function () {
+    \Artisan::call('config:clear');
+    \Artisan::call('route:clear');
+    \Artisan::call('view:clear');
+    return 'Caches cleared';
+});
+
+Route::get('/run-migrate', function () {
+    \Artisan::call('migrate', ['--force' => true]);
+    return 'Migrations run';
+});
+
 // Authenticated routes
 // routes/web.php
 // routes/web.php
