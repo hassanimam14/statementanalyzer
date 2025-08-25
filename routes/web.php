@@ -23,6 +23,8 @@ require __DIR__.'/auth.php';
 // routes/web.php
 // routes/web.php
 Route::get('/auth', fn () => view('auth.portal'))->name('auth.portal');
+Route::get('/healthz', fn() => 'ok');
+
 
 Route::middleware(['auth'])->group(function () {
     // ✅ Dashboard (pointing to show instead of index)
