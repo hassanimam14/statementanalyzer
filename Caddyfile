@@ -1,9 +1,64 @@
 {
-    auto_https off
-    admin off
+  auto_https off
+  admin off
 }
-:8080 {
-    root * /app/public
-    php_fastcgi unix//run/php/php-fpm.sock
+
+:{$PORT} {
+  encode zstd gzip
+  root * /app/public
+
+  # ── Block sensitive paths & dotfiles
+  @private path_regexp private ^/(?:\.|vendor/|storage/|bootstrap/|database/|resources/|config/|tests/|node_modules/).*
+  respond @private 404
+  @dotfiles path */.*
+  respond @dotfiles 404
+
+  # ── Security headers (Railway terminates TLS, but these still help)
+  header {
+    # HSTS will be added by the edge; harmless here if forwarded
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "SAMEORIGIN"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+    # Hide versions
+    -Server
+  }
+
+  # ── Limit upload size (adjust to your need)
+  request_body {
+    max_size 15MB
+  }
+
+  # ── Static assets served directly
+  @static {
+    path /assets/* /build/* /favicon.ico /robots.txt
+  }
+  handle @static {
     file_server
+  }
+
+  # ── Route all other requests to Laravel front controller
+  @php route {
+    not path /index.php
+  }
+
+  handle @php {
+    try_files {path} /index.php
+    php_fastcgi 127.0.0.1:9000 {
+      env APP_ENV production
+      env HTTPS on
+    }
+  }
+
+  # ── Directly handle /index.php calls
+  handle_path /index.php* {
+    php_fastcgi 127.0.0.1:9000 {
+      env APP_ENV production
+      env HTTPS on
+    }
+  }
+
+  # Fallback
+  file_server
 }
