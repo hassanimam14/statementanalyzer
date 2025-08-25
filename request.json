@@ -1,0 +1,21 @@
+﻿{
+  "generationConfig": {
+    "temperature": 0,
+    "response_mime_type": "application/json"
+  },
+  "contents": [
+    {
+      "parts": [
+        {
+          "fileData": {
+            "mimeType": "application/pdf",
+            "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/kk55cpa3la47"
+          }
+        },
+        {
+          "text": "Read the attached bank/credit-card statement and return ONLY the three-letter ISO 4217 currency code used in the statement (for example: PKR, USD, EUR). Output must be valid JSON in this format:\n\n{ \"currency\": \"PKR\" }\n\nSTRICT RULES:\n- Output ONLY JSON.\n- Ensure the currency code matches the statement’s actual currency.\n- No explanations, no commentary, no markdown."
+        }
+      ]
+    }
+  ]
+}

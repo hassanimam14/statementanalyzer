@@ -1,0 +1,9 @@
+services:
+  sparrow:
+    image: katanaml/sparrow:latest
+    ports:
+      - "9000:8080"           # host:container
+    environment:
+      - SPARROW_ENABLE_OCR=true
+      - SPARROW_MODE=parse
+    restart: unless-stopped
