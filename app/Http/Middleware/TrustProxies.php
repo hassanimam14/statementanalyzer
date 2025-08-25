@@ -10,5 +10,5 @@ class TrustProxies extends Middleware
     protected $proxies = '*'; // trust the tunnel
 
     /** @var int */
-    protected $headers = Request::HEADER_X_FORWARDED_ALL;
+protected $headers = Request::HEADER_X_FORWARDED_AWS_ELB;
 }
